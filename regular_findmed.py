@@ -26,8 +26,6 @@ def make_dictionary(drugs_coded):
 drugs_coded = pd.read_csv("Drugs_coded.csv", sep=';', encoding='utf-8')
 patients_data = pd.read_csv("AG_2010_2015_NewFormatDate.csv", sep=';', encoding='utf-8')
 drugs_coded_dictionary = make_dictionary(drugs_coded)
-# print(drugs_coded_dictionary.keys())
-# 'result.csv'.close()
 pd.DataFrame(columns=['registration_number', 'data', 'med', 'code']).to_csv("result.csv", sep=';')
 # for j in range(30):
 for j in range(len(patients_data)):
@@ -38,21 +36,17 @@ for j in range(len(patients_data)):
         for i in range(len(x)):
             med_syn = []
             if x[i] != '':
-                # find_drug = ''
                 for k in drugs_coded_dictionary.keys():
-                    if re.search(drugs_coded_dictionary.get(k)[0], x[i]) is not None and drugs_coded_dictionary.get(k)[3] == 2:
-                            # and len(drugs_coded_dictionary.get(k)[0] > len(find_drug)):
-                        # find_drug = drugs_coded_dictionary.get(k)[0]
+                    if re.search(drugs_coded_dictionary.get(k)[0], x[i]) is not None:
                         med_syn.append(k)
-                        # med.append(drugs_coded_dictionary.get(k)[1])
-                        # med_code.append('{:.0f}'.format(drugs_coded_dictionary.get(k)[2]))
                 med_syn.sort(reverse=True)
                 for value in med_syn:
                     for element in med_syn:
                         if value != element and value.find(element) != -1:
                             med_syn.remove(element)
                 for k in med_syn:
-                    med.add(drugs_coded_dictionary.get(k)[1])
-                    med_code.add('{:.0f}'.format(drugs_coded_dictionary.get(k)[2]))
+                    if drugs_coded_dictionary.get(k)[3] == 2:
+                        med.add(drugs_coded_dictionary.get(k)[1])
+                        med_code.add('{:.0f}'.format(drugs_coded_dictionary.get(k)[2]))
     pd.DataFrame(columns=[patients_data['Рег.№'][j], patients_data['Дата приема'][j], '|'.join(med),
                           '|'.join(med_code)]).to_csv('result.csv', sep=';', mode='a')
